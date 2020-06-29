@@ -49,3 +49,24 @@ def register(request):
     
     else:
         return JsonResponse({}, safe=True, status=405)
+
+
+@csrf_exempt
+@api_authentication
+def all_meters(request):
+    if request.method == 'POST':
+        # all_meter_obj = UserMeter.objects.filter(user=request.user)
+        all_meter_obj = UserMeter.objects.select_related('user').filter(user=request.user)
+        new_response=[]
+        for amo in all_meter_obj:
+            response = {
+                    'user':amo.user.username,
+                    'meter_number':amo.meter_number,
+                    'address': amo.address,
+                    'state': amo.state,
+                    'zipcode': amo.zipcode,
+                }
+            new_response.append(response)
+        return JsonResponse(new_response, safe=False, status=200)
+            
+    

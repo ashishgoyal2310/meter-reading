@@ -96,4 +96,6 @@ def myprofile(request):
     user = request.user
     response = {'success': True, 'username':user.username, 'email':user.email, 'first_name':user.first_name, 'last_name':user.last_name }
     return JsonResponse(response, safe=True, status=200)
+
+
     
