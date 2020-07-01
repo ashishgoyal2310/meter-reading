@@ -60,6 +60,7 @@ def all_meters(request):
         new_response=[]
         for amo in all_meter_obj:
             response = {
+                    'id': amo.id,
                     'user':amo.user.username,
                     'meter_number':amo.meter_number,
                     'address': amo.address,
@@ -70,3 +71,45 @@ def all_meters(request):
         return JsonResponse(new_response, safe=False, status=200)
             
     
+@csrf_exempt
+@api_authentication
+def info(request,pid):
+    if request.method == 'GET':
+        try:
+            meter_obj = UserMeter.objects.get(id=pid,user=request.user)
+        except Exception as e:
+            response = {'msg':"No Match found"}
+            return JsonResponse(response, safe=True, status=400)
+        
+        response = {
+                        'id': meter_obj.id,
+                        'user':meter_obj.user.username,
+                        'meter_number':meter_obj.meter_number,
+                        'address': meter_obj.address,
+                        'state': meter_obj.state,
+                        'zipcode': meter_obj.zipcode,
+                    }
+        return JsonResponse(response, safe=True, status=200)
+
+    elif request.method == 'DELETE':
+        try:
+            meter_obj = UserMeter.objects.get(id=pid,user=request.user)
+            meter_num = meter_obj.meter_number
+        except Exception as e:
+            return HttpResponse("No match found")
+        meter_obj.delete()
+        return HttpResponse("Meter {} information deleted".format(meter_num))
+
+    elif request.method == 'PUT':
+        try:
+            meter_obj = UserMeter.objects.get(id=pid,user=request.user)
+            meter_num = meter_obj.meter_number
+            new_address = json.loads(request.body)
+            if 'address' not in new_address.keys() or not new_address['address']:
+                return HttpResponse("Please enter address")
+        except Exception as e:
+            return HttpResponse("No match found PUT method")
+        # import pdb;pdb.set_trace()
+        meter_obj.address = new_address.get('address')
+        meter_obj.save()
+        return HttpResponse("Meter {} address updated as {}".format(meter_num,meter_obj.address))
