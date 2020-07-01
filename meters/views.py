@@ -70,3 +70,5 @@ def all_meters(request):
         return JsonResponse(new_response, safe=False, status=200)
             
     
+def fooo():
+    print('Hey, I am inside Fooo')
