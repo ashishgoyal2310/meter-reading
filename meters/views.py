@@ -162,13 +162,12 @@ def status_info(request):
     print(request.user.id)
     if request.method == 'GET':
         param_meter_number = request.GET.get('meter_number','')
-        if param_meter_number != '':
-            health_objs = MeterHealth.objects.filter(user_meter__user_id=request.user.id,user_meter__meter_number=param_meter_number)
-        else:    
-            health_objs = MeterHealth.objects.filter(user_meter__user_id=request.user.id)
+        health_objs_qs = MeterHealth.objects.filter(user_meter__user_id=request.user.id)
+        if param_meter_number != '': 
+            health_objs_qs = health_objs_qs.filter(user_meter__meter_number=param_meter_number)
 
         new_response=[]
-        for obj in health_objs:
+        for obj in health_objs_qs:
             response = {
                         'id': obj.id,
                         'meter_number':obj.user_meter.meter_number,
