@@ -8,7 +8,7 @@ from accounts.utils import api_authentication
 from django.http import HttpResponse, JsonResponse
 
 # Create your views here.
-
+#d188f24ddc6243a991bff93a4d3ff8a4 - ashish
 
 
 def index(request):
@@ -26,10 +26,10 @@ def send_json(request):
 @csrf_exempt
 def login_request(request):
     if request.method == 'POST':
-        data = request.POST
+        data = json.loads(request.body)
 
-        username = request.POST.get('username',"")
-        password = request.POST.get('password',"")
+        username = data.get('username',"")
+        password = data.get('password',"")
         # import pdb; pdb.set_trace()
         if not username or not password:
             response = {
@@ -57,13 +57,15 @@ def login_request(request):
 
 @csrf_exempt
 def register(request):
+    # import pdb; pdb.set_trace()
     if request.method == 'POST':
-        data = request.POST
-        first_name = request.POST.get('first_name',"")
-        last_name = request.POST.get('last_name',"")
-        email = request.POST.get('email',"")
-        username = request.POST.get('username',"")
-        password = request.POST.get('password',"")
+        data = json.loads(request.body)
+        print(data)
+        first_name = data.get('first_name',"")
+        last_name = data.get('last_name',"")
+        email = data.get('email',"")
+        username = data.get('username',"")
+        password = data.get('password',"")
 
         if not username or not password or not first_name or not email:
             response = {
