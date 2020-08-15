@@ -1,9 +1,21 @@
 {% extends 'blank.html' %}
 
-{% block contentheading %}User Register{% endblock %}
+{% block contentheading %}Add User{% endblock %}
 
 {% block content %}
 <div class="row">
-    User Form
+    <form method='post'>
+        {% if message %}<p>{{ message }}</p>{% endif %}
+        {% csrf_token %}
+        {% for field in form %}
+            <p>
+            {{ field.label }}
+            {{ field }}
+            {{ field.help_text }}
+            {{ field.errors }}
+            </p>
+        {% endfor %}
+        <input type=submit value="Add User">
+    </form>
 </div>
 {% endblock %}
