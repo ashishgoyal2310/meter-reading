@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from users.forms import UserCreateForm
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 # Create your views here.
 def users_index(request):
@@ -10,8 +12,9 @@ def users_index(request):
 
 def user_list_view(request):
     template_name = "users/user_list.html"
-    ctx = {}
-
+    all_users = User.objects.all()
+    print(all_users)
+    ctx = {'all_users': all_users}
     return render(request, template_name, ctx)
 
 
