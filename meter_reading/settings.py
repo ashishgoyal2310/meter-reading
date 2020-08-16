@@ -81,18 +81,18 @@ WSGI_APPLICATION = 'meter_reading.wsgi.application'
 
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # },
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': local_settings.DB_NAME,
-        'USER': local_settings.DB_USER,
-        'PASSWORD': local_settings.DB_PASSWORD,
-        'HOST': local_settings.DB_HOST,
-        'PORT': local_settings.DB_PORT,
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': local_settings.DB_NAME,
+    #     'USER': local_settings.DB_USER,
+    #     'PASSWORD': local_settings.DB_PASSWORD,
+    #     'HOST': local_settings.DB_HOST,
+    #     'PORT': local_settings.DB_PORT,
+    # }
 }
 
 
@@ -133,3 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIT_PORT = 25
