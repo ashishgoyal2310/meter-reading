@@ -10,10 +10,20 @@ class HttpResponseUnauthorized(HttpResponse):
 def api_authentication(func):
     def inner(request, *args, **kwargs):
         deco_token =  request.META.get('HTTP_AUTHORIZATION')
-        userauth_obj = UserAuthToken.objects.filter(token=deco_token)
+        userauth_obj = UserAuthToken.objects.filter(token=deco_token).first()
         if not userauth_obj:
             return HttpResponseUnauthorized()
-
-        request.user = userauth_obj[0].user
+        request.user = userauth_obj.user
         return func(request, *args, **kwargs)
     return inner
+
+# '67f871d24d664506b31b4bee277ad1ee'
+# def create_user_authentication(func):
+#     def inner(request, *args, **kwargs):
+#         deco_token =  request.META.get('HTTP_AUTHORIZATION')
+#         userauth_obj = UserAuthToken.objects.filter(token=deco_token)
+#         if not userauth_obj:
+#             return HttpResponseUnauthorized()
+#         request.user = userauth_obj[0].user
+#         return func(request, *args, **kwargs)
+#     return inner

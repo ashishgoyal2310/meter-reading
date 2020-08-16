@@ -31,7 +31,19 @@ class MeterHealth(models.Model):
     reading_date = models.DateField(auto_now=False, auto_now_add=True)
     # reading_date = models.DateField()
 
+class ApiPermission(models.Model):
+    API_METHODS = (
+        ('C', 'Post'),
+        ('R', 'Get'),
+        ('U', 'Put'),
+        ('D', 'Delete'),
+    )
+    # users = models.ManyToManyField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    api_url = models.CharField(max_length = 128)
+    api_name = models.CharField(max_length = 32)
+    api_method = models.CharField(max_length = 8, choices=API_METHODS)
 
-    
-    
-    
+class ApiGroup(models.Model):
+    name = models.CharField(max_length = 32)
+    api_permissions = models.ManyToManyField(ApiPermission)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
