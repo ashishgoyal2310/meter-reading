@@ -1,5 +1,5 @@
 from django.contrib import admin
-from meters.models import UserMeter, MeterHealth
+from meters.models import UserMeter, MeterHealth, ApiGroup, ApiPermission
 
 # Register your models here.
 
@@ -17,3 +17,12 @@ class MeterHealthAdmin(admin.ModelAdmin):
 
 admin.site.register(MeterHealth, MeterHealthAdmin)
 
+
+class ApiPermissionAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(ApiPermission, ApiPermissionAdmin)
+
+
+class ApiGroupAdmin(admin.ModelAdmin):
+    filter_horizontal = ('api_permissions', )
+admin.site.register(ApiGroup, ApiGroupAdmin)
