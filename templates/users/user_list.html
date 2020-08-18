@@ -2,14 +2,53 @@
 
 {% block contentheading %}List User{% endblock %}
 
+{% block extracss %}
+<link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+<style>
+    .dataTables_wrapper,
+    table.dataTable {
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row">
-    {% for user_list in all_users %}
-        ID: {{user_list.id}}
-        Email: {{user_list.email}}
-        F Name: {{user_list.first_name}}
-        L Name: {{user_list.last_name}}
-        <br>
-    {% endfor %}
+    <table id="exampleTableId" class="display">
+        <thead>
+            <tr>
+                <th>#ID</th>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date Joined</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_obj in all_users %}
+                <tr>
+                    <td>{{user_obj.id}}</td>
+                    <td>{{user_obj.email}}</td>
+                    <td>{{user_obj.first_name}}</td>
+                    <td>{{user_obj.last_name}}</td>
+                    <td>{{user_obj.date_joined}}</td>
+                    <td>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#exampleTableId').DataTable();
+    });
+</script>
 {% endblock %}

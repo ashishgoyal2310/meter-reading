@@ -7,8 +7,9 @@ User = get_user_model()
 
 # Create your views here.
 def users_index(request):
-    return HttpResponse("Test Users Index View.")
-
+    template_name = "blank.html"
+    ctx = {}
+    return render(request, template_name, ctx)
 
 def user_list_view(request):
     template_name = "users/user_list.html"
