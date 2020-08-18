@@ -1,0 +1,10 @@
+Hello {{user.first_name}} {{user.last_name}}, 
+
+Welcome! to the portal. Your registration is successful on {{user.date_joined}}
+
+USERNAME : {{user.username}}
+PASSWORD : {{password}}
+
+
+Thanks & Regards,
+Development Team
