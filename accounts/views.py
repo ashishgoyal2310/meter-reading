@@ -7,9 +7,13 @@ from django.contrib.auth.models import User
 from accounts.models import UserAuthToken
 from accounts.utils import api_authentication
 from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.decorators import permission_required
+
 
 # Create your views here.
-#d188f24ddc6243a991bff93a4d3ff8a4 - ashish
+#ashish - 67f871d24d664506b31b4bee277ad1ee
+# requestoruser 34a643e53e3749e1af176e5af3c09ce1
+# User8last8 e0cfbb6aa5a7456fa4df4a591f1355bd
 
 
 def index(request):
@@ -58,10 +62,8 @@ def login_request(request):
 
 @csrf_exempt
 def register(request):
-    # import pdb; pdb.set_trace()
     if request.method == 'POST':
         data = json.loads(request.body)
-        # print(data)
         first_name = data.get('first_name',"")
         last_name = data.get('last_name',"")
         email = data.get('email',"")
@@ -97,7 +99,6 @@ def register(request):
 @api_authentication
 def myprofile(request):
     user = request.user
-    email_res = send_user_register_email(user)
     # email_res = sendSimpleEmail(user)
     response = {'success': True, 'username':user.username, 'email':user.email, 'first_name':user.first_name, 'last_name':user.last_name,'email_res':email_res }
     return JsonResponse(response, safe=True, status=200)
@@ -105,6 +106,7 @@ def myprofile(request):
 
 @csrf_exempt
 @api_authentication
+@permission_required('auth.add_user')
 def create_user(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -135,9 +137,26 @@ def create_user(request):
             userauth = UserAuthToken.objects.create(token=UserAuthToken.generate_unique_key(), user=user)
 
             response = {'success': True, 'username':user.username, 'token': userauth.token}
+            password = kwargs['password']
+            email_res = send_user_register_email(user,password)
             return JsonResponse(response, safe=True, status=200)
         
 
+@csrf_exempt
+@api_authentication
+@permission_required('auth.view_user')
+def users_list(request):
+    all_users = User.objects.all()
+    all_users_list=[]
+    for user_obj in all_users:
+        response = {
+                'id': user_obj.id,
+                'First Name':user_obj.first_name,
+                'Last Name':user_obj.first_name,
+                'Email': user_obj.email,
+                'Date joined': user_obj.date_joined
+            }
+        all_users_list.append(response)
+    return JsonResponse(all_users_list, safe=False, status=200)
 
 
-    
