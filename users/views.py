@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from users.forms import UserCreateForm
+from email_task import send_user_register_email
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -41,6 +42,7 @@ def user_create_view(request):
             user.save()
             form = UserCreateForm()
             ctx['message'] = "User '{}' created successfully.".format(user.username)
+            send_user_register_email(user, RANDOM_PWD)
     else:
         form = UserCreateForm()
 

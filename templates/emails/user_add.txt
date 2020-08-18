@@ -1,7 +1,10 @@
-Hello {{user.first_name}} {{user.last_name}}, 
+Dear {{user.first_name}} {{user.last_name}},
+
+Greetings from Team!!
 
 Welcome! to the portal. Your registration is successful on {{user.date_joined}}
 
+Now you can sign in with your username and password.
 USERNAME : {{user.username}}
 PASSWORD : {{password}}
 
