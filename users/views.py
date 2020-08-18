@@ -5,16 +5,25 @@ from users.forms import UserCreateForm
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+
+def get_random_string():
+    import random
+    import string
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(10))
+    return result_str
+
+
 # Create your views here.
 def users_index(request):
     template_name = "blank.html"
     ctx = {}
     return render(request, template_name, ctx)
 
+
 def user_list_view(request):
     template_name = "users/user_list.html"
     all_users = User.objects.all()
-    print(all_users)
     ctx = {'all_users': all_users}
     return render(request, template_name, ctx)
 
@@ -22,7 +31,7 @@ def user_list_view(request):
 def user_create_view(request):
     template_name = "users/user_create.html"
     ctx = {}
-    RANDOM_PWD = '123456'
+    RANDOM_PWD = get_random_string()
 
     if request.method == 'POST':
         form = UserCreateForm(request.POST, request.FILES)
