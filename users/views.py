@@ -22,6 +22,12 @@ def users_index(request):
     return render(request, template_name, ctx)
 
 
+def users_login(request):
+    template_name = "users/user_login.html"
+    ctx = {}
+    return render(request, template_name, ctx)
+
+
 def user_list_view(request):
     template_name = "users/user_list.html"
     all_users = User.objects.all()
