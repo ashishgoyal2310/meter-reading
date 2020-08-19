@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 
-from users.forms import UserCreateForm
+from users.forms import UserCreateForm, UserLoginForm
 from email_task import send_user_register_email
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -16,6 +18,7 @@ def get_random_string():
 
 
 # Create your views here.
+@login_required
 def users_index(request):
     template_name = "blank.html"
     ctx = {}
@@ -25,6 +28,21 @@ def users_index(request):
 def users_login(request):
     template_name = "users/user_login.html"
     ctx = {}
+    success_url = "/users/"
+
+    if request.method == 'POST':
+        form = UserLoginForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            if user:
+                login(request, user)
+                return redirect(success_url)
+            else:
+                form.errors['username'] = ["Your username and password didn't match. Please try again."]
+    else:
+        form = UserLoginForm()
+
+    ctx['form'] = form
     return render(request, template_name, ctx)
 
 
