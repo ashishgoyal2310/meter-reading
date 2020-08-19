@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 
 from users.forms import UserCreateForm, UserLoginForm
 from email_task import send_user_register_email
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required, permission_required
 User = get_user_model()
 
 
@@ -53,13 +53,16 @@ def users_login(request):
     return render(request, template_name, ctx)
 
 
+@login_required
+@permission_required('auth.view_user', raise_exception=True)
 def user_list_view(request):
     template_name = "users/user_list.html"
     all_users = User.objects.all()
     ctx = {'all_users': all_users}
     return render(request, template_name, ctx)
 
-
+@login_required
+@permission_required('auth.add_user', raise_exception=True)
 def user_create_view(request):
     template_name = "users/user_create.html"
     ctx = {}
