@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
 
 from users.forms import UserCreateForm, UserLoginForm
 from email_task import send_user_register_email
@@ -20,15 +21,21 @@ def get_random_string():
 # Create your views here.
 @login_required
 def users_index(request):
-    template_name = "blank.html"
+    template_name = "base.html"
     ctx = {}
     return render(request, template_name, ctx)
+
+@login_required
+def users_logout(request):
+    logout(request)
+    success_url = reverse_lazy("users-login")
+    return redirect(success_url)
 
 
 def users_login(request):
     template_name = "users/user_login.html"
     ctx = {}
-    success_url = "/users/"
+    success_url = reverse_lazy("users-index")
 
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
