@@ -106,7 +106,7 @@ def myprofile(request):
 
 @csrf_exempt
 @api_authentication
-@permission_required('auth.add_user')
+@permission_required('auth.add_user', raise_exception=True)
 def create_user(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -138,23 +138,23 @@ def create_user(request):
 
             response = {'success': True, 'username':user.username, 'token': userauth.token}
             password = kwargs['password']
-            email_res = send_user_register_email(user,password)
+            send_user_register_email(user,password)
             return JsonResponse(response, safe=True, status=200)
         
 
 @csrf_exempt
 @api_authentication
-@permission_required('auth.view_user')
+@permission_required('auth.view_user', raise_exception=True)
 def users_list(request):
     all_users = User.objects.all()
     all_users_list=[]
     for user_obj in all_users:
         response = {
                 'id': user_obj.id,
-                'First Name':user_obj.first_name,
-                'Last Name':user_obj.first_name,
-                'Email': user_obj.email,
-                'Date joined': user_obj.date_joined
+                'first_name':user_obj.first_name,
+                'last_name':user_obj.last_name,
+                'email': user_obj.email,
+                'date_joined': user_obj.date_joined
             }
         all_users_list.append(response)
     return JsonResponse(all_users_list, safe=False, status=200)
