@@ -1,5 +1,5 @@
 import json
-from email_task import sendSimpleEmail,send_user_register_email
+from email_task import sendSimpleEmail, send_user_register_email, send_forgot_password_email
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
@@ -171,7 +171,7 @@ def forget_password(request):
 
             forget_password_obj = UserForgetPassword.objects.get(user=user)
             response = {'status': True, 'token':'Email sent for password reset'}
-            # send_forgot_password_email(user,forget_password_obj.token)
+            send_forgot_password_email(user,forget_password_obj.token)
             return JsonResponse(response, safe=True, status=200)
 
         else:
