@@ -24,3 +24,15 @@ def send_user_register_email(user, password):
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
     msg.attach_alternative(html_content, "text/html")
     msg.send()
+
+# def send_forgot_password_email(user,token):
+#     from_email, to = 'from@example.com', user.email
+
+#     context = {'user': user,'password':password}
+#     subject = render_to_string('emails/user_add_subject.txt', context)
+#     text_content = render_to_string('emails/user_add.txt', context)
+#     html_content = text_content
+
+#     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+#     msg.attach_alternative(html_content, "text/html")
+#     msg.send()
