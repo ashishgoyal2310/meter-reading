@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from accounts.models import UserAuthToken
+from accounts.models import UserAuthToken, UserForgetPassword
 from accounts.utils import api_authentication
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import permission_required
@@ -159,4 +159,21 @@ def users_list(request):
         all_users_list.append(response)
     return JsonResponse(all_users_list, safe=False, status=200)
 
+@csrf_exempt
+def forget_password(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            if not UserForgetPassword.objects.filter(user=user).exists():
+                user_forget_pass = UserForgetPassword.objects.create(token=UserAuthToken.generate_unique_key(), user=user)
 
+            forget_password_obj = UserForgetPassword.objects.get(user=user)
+            response = {'status': True, 'token':'Email sent for password reset'}
+            # send_forgot_password_email(user,forget_password_obj.token)
+            return JsonResponse(response, safe=True, status=200)
+
+        else:
+            response = {'status': False, 'error':'Email does not exist ! Please enter Valid email'}
+            return JsonResponse(response, safe=False, status=400)

@@ -10,4 +10,5 @@ urlpatterns = [
     path('myprofile/',views.myprofile, name='myprofile'),
     path('create_user/',views.create_user, name='create_user'),
     path('users_list/',views.users_list, name='users_list'),
+    path('forget_password/',views.forget_password, name='forget_password'),
 ]
