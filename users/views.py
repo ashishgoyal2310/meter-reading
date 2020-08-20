@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, logout
 from django.urls import reverse_lazy
 
-from users.forms import UserCreateForm, UserLoginForm
+from users.forms import UserCreateForm, UserLoginForm, UserResetPasswordForm
 from email_task import send_user_register_email
 from django.contrib.auth import get_user_model
 from accounts.models import UserAuthToken, UserForgetPassword
@@ -68,11 +68,38 @@ def users_forgot_password(request):
                 forget_password_obj = UserForgetPassword.objects.create(token=UserAuthToken.generate_unique_key(), user=user)
             else:
                 forget_password_obj = UserForgetPassword.objects.get(user=user)
+            print('-----------------', forget_password_obj.token)
             # send_forgot_password_email(user, forget_password_obj.token)
             return redirect(success_url)
         else:
             ctx['error'] = 'Email does not exist ! Please enter Valid email'
 
+    return render(request, template_name, ctx)
+
+
+def users_reset_password(request, token):
+    template_name = "users/user_reset_password.html"
+    ctx = {}
+    success_url = reverse_lazy("users-login")
+
+    forget_password_obj = UserForgetPassword.objects.filter(token=token).first()
+    if not forget_password_obj:
+        return HttpResponse('Invalid link or link has been expired.')
+
+    if request.method == 'POST':
+        form = UserResetPasswordForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            user = forget_password_obj.user
+            user.set_password(password)
+            user.save()
+            forget_password_obj.delete()
+            # send_reset_password_success_email(user)
+            return redirect(success_url)
+    else:
+        form = UserResetPasswordForm()
+
+    ctx['form'] = form
     return render(request, template_name, ctx)
 
 

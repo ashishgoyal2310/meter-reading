@@ -20,6 +20,19 @@ class UserLoginForm(forms.Form):
 
         return user
 
+
+class UserResetPasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput)
+    repeat_password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        data = self.cleaned_data
+        password = data.get('password', '')
+        repeat_password = data.get('repeat_password', '')
+        if not (password and repeat_password and password == repeat_password):
+            raise forms.ValidationError({'password': 'Invalid password'})
+
+
 class UserCreateForm(forms.ModelForm):
     class Meta:
         model = User
