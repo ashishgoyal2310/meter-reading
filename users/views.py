@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from users.forms import UserCreateForm, UserLoginForm
 from email_task import send_user_register_email
 from django.contrib.auth import get_user_model
+from accounts.models import UserAuthToken, UserForgetPassword
 from django.contrib.auth.decorators import login_required, permission_required
 User = get_user_model()
 
@@ -50,6 +51,28 @@ def users_login(request):
         form = UserLoginForm()
 
     ctx['form'] = form
+    return render(request, template_name, ctx)
+
+
+def users_forgot_password(request):
+    template_name = "users/user_forgot_password.html"
+    ctx = {}
+    success_url = reverse_lazy("users-login")
+
+    if request.method == 'POST':
+        data = request.POST
+        email = data.get('email')
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            if not UserForgetPassword.objects.filter(user=user).exists():
+                forget_password_obj = UserForgetPassword.objects.create(token=UserAuthToken.generate_unique_key(), user=user)
+            else:
+                forget_password_obj = UserForgetPassword.objects.get(user=user)
+            # send_forgot_password_email(user, forget_password_obj.token)
+            return redirect(success_url)
+        else:
+            ctx['error'] = 'Email does not exist ! Please enter Valid email'
+
     return render(request, template_name, ctx)
 
 
