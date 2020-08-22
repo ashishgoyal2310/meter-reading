@@ -1,7 +1,9 @@
 from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-
+from django.urls import reverse_lazy
+from django.conf import settings
+from datetime import datetime
 
 def sendSimpleEmail(user):
     username = user.username
@@ -28,8 +30,9 @@ def send_user_register_email(user, password):
 
 def send_forgot_password_email(user, token):
     from_email, to = 'from@example.com', user.email
+    link = "%s%s" %(settings.SITE_BASE_URL,reverse_lazy("users-reset-password", args=(token,)))
 
-    context = {'user': user,'token': token}
+    context = {'user': user,'token': token, 'link':link}
     subject = render_to_string('emails/user_forgot_password_subject.txt', context)
     text_content = render_to_string('emails/user_forgot_password.txt', context)
     html_content = text_content
@@ -42,7 +45,7 @@ def send_forgot_password_email(user, token):
 def send_reset_password_success_email(user):
     from_email, to = 'from@example.com', user.email
 
-    context = {'user': user}
+    context = {'user': user,'datetime':datetime.now()}
     subject = render_to_string('emails/user_reset_password_subject.txt', context)
     text_content = render_to_string('emails/user_reset_password.txt', context)
     html_content = text_content

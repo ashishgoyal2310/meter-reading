@@ -146,3 +146,5 @@ STATICFILES_DIRS = [
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'localhost'
 EMAIT_PORT = 25
+
+SITE_BASE_URL = 'http://localhost:8000'
